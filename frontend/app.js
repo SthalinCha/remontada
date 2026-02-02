@@ -4,6 +4,74 @@ const state = {
   results: [],
 };
 
+// === SISTEMA DE MENÚ LATERAL ===
+const mainModeSelect = document.getElementById("main-mode-select");
+const methodSelect = document.getElementById("method-select");
+const methodSection = document.getElementById("method-section");
+
+// Mapeo de métodos sin etiquetas a valores de radio
+const unsupervisedMethods = {
+  "momentos": { value: "momentos", label: "Momentos (24)" },
+  "hu": { value: "hu", label: "Momentos de Hu" },
+  "zernike": { value: "zernike", label: "Momentos de Zernike" },
+  "sift": { value: "sift", label: "SIFT (solo procesadas)" },
+  "hog": { value: "hog", label: "HOG (solo procesadas)" },
+  "cnn": { value: "cnn", label: "CNN/ResNet50 (solo procesadas)" }
+};
+
+// Mapeo de métodos con etiquetas a valores de radio
+const supervisedMethods = {
+  "momentos-metrics": { value: "external-metrics", label: "📊 Momentos (ARI/AMI/NMI)" },
+  "hu-metrics": { value: "external-metrics-hu", label: "📊 Hu (ARI/AMI/NMI)" },
+  "zernike-metrics": { value: "external-metrics-zernike", label: "📊 Zernike (ARI/AMI/NMI)" },
+  "sift-metrics": { value: "external-metrics-sift", label: "📊 SIFT (ARI/AMI/NMI)" },
+  "hog-metrics": { value: "external-metrics-hog", label: "📊 HOG (ARI/AMI/NMI)" },
+  "cnn-metrics": { value: "external-metrics-cnn", label: "📊 CNN (ARI/AMI/NMI)" }
+};
+
+// Listener para el combo principal
+mainModeSelect.addEventListener("change", function() {
+  const mainMode = this.value;
+  methodSelect.innerHTML = '<option value="">-- Seleccionar método --</option>';
+  
+  if (mainMode === "unsupervised") {
+    // Poblar con métodos sin etiquetas
+    Object.entries(unsupervisedMethods).forEach(([key, method]) => {
+      const option = document.createElement("option");
+      option.value = method.value;
+      option.textContent = method.label;
+      methodSelect.appendChild(option);
+    });
+    methodSection.style.display = "block";
+  } else if (mainMode === "supervised") {
+    // Poblar con métodos con etiquetas
+    Object.entries(supervisedMethods).forEach(([key, method]) => {
+      const option = document.createElement("option");
+      option.value = method.value;
+      option.textContent = method.label;
+      methodSelect.appendChild(option);
+    });
+    methodSection.style.display = "block";
+  } else {
+    methodSection.style.display = "none";
+  }
+});
+
+// Listener para el combo de métodos
+methodSelect.addEventListener("change", function() {
+  const selectedMode = this.value;
+  if (selectedMode) {
+    // Activar el radio button correspondiente
+    const radioToActivate = document.querySelector(`input[name="mode"][value="${selectedMode}"]`);
+    if (radioToActivate) {
+      radioToActivate.checked = true;
+      // Disparar el evento change para activar la lógica existente
+      radioToActivate.dispatchEvent(new Event("change"));
+    }
+  }
+});
+
+// === ELEMENTOS DOM EXISTENTES ===
 const fileInput = document.getElementById("file-input");
 const uploadBtn = document.getElementById("upload-btn");
 const clearBtn = document.getElementById("clear-btn");

@@ -7,6 +7,34 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Menú lateral izquierdo -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>🔬 Control de Análisis</h2>
+      </div>
+      <div class="sidebar-content">
+        <div class="menu-section">
+          <label for="main-mode-select">Clustering en Galería</label>
+          <select id="main-mode-select" class="menu-select">
+            <option value="">-- Seleccionar --</option>
+            <option value="unsupervised">Clustering sin etiquetas</option>
+            <option value="supervised">Clustering con etiquetas</option>
+          </select>
+        </div>
+        
+        <div class="menu-section" id="method-section" style="display: none;">
+          <label for="method-select">Método de análisis</label>
+          <select id="method-select" class="menu-select">
+            <option value="">-- Seleccionar método --</option>
+          </select>
+        </div>
+        
+        <div class="menu-info">
+          <p>💡 Selecciona el tipo de clustering y luego el método específico</p>
+        </div>
+      </div>
+    </aside>
+
     <div class="container">
       <header>
         <h1>Procesamiento de Imágenes</h1>
@@ -18,7 +46,9 @@
           <p>Arrastra y suelta imágenes aquí o selecciona archivos</p>
           <input id="file-input" type="file" accept="image/png,image/jpeg" multiple />
         </div>
-        <div class="mode-selector">
+        
+        <!-- Radio buttons ocultos para compatibilidad con código existente -->
+        <div class="mode-selector" style="display: none;">
           <label>
             <input type="radio" name="mode" value="gallery" checked />
             Ver galería
