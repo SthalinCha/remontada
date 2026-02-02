@@ -1,6 +1,6 @@
 // Detectar si estamos en local o producción
 const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-const API_BASE = isLocal ? "/api" : "https://remontada-uzn6.onrender.com/api";
+const API_BASE = isLocal ? "/api" : "https://remontada-uzn6.onrender.com";
 
 const state = {
   items: [],
