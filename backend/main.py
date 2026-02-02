@@ -52,12 +52,14 @@ os.makedirs(BINARIZED_DIR, exist_ok=True)
 app = FastAPI()
 
 # Configurar CORS para permitir frontend local y en producción
+
 allowed_origins = [
     "http://localhost",
     "http://localhost:8080",
     "http://127.0.0.1",
     "http://127.0.0.1:8080",
-    "https://remontada-uzn6.onrender.com"
+    "https://remontada-uzn6.onrender.com",  # backend mismo
+    "https://remontada-1.onrender.com"      # frontend
 ]
 
 # En desarrollo, permitir todos los orígenes
