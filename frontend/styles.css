@@ -19,6 +19,7 @@ body {
   background: var(--bg);
   color: var(--text);
   display: flex;
+  min-height: 100vh;
 }
 
 /* Menú lateral */
@@ -103,12 +104,20 @@ body {
 .container {
   margin-left: var(--sidebar-width);
   flex: 1;
-  max-width: calc(1100px + var(--sidebar-width));
+  width: calc(100% - var(--sidebar-width));
   padding: 32px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 header {
   margin-bottom: 24px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: center;
 }
 
 header h1 {
@@ -121,6 +130,11 @@ header h1 {
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 32px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: center;
 }
 
 .drop-zone {
@@ -243,10 +257,38 @@ button:disabled {
   object-fit: cover;
 }
 
+section {
+  width: 100%;
+  align-self: stretch;
+}
+
+#gallery-section,
+#results-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+}
+
+#gallery-section h2,
+#results-section h2 {
+  margin: 0 0 20px 0;
+}
+
+.gallery {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .results {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  max-width: 100% !important;
+  box-sizing: border-box;
 }
 
 .cluster-group {
@@ -296,15 +338,16 @@ button:disabled {
 .result-item {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 8px;
+  max-width: 500px;
 }
 
 .result-preview {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 
 .result-preview:has(.result-preview-label:only-child),
@@ -314,29 +357,33 @@ button:disabled {
 
 .result-preview img {
   width: 100%;
-  border-radius: 8px;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
   border: 1px solid var(--border);
 }
 
 .result-preview-label {
-  font-size: 11px;
+  font-size: 9px;
   color: var(--muted);
   text-align: center;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .result-data {
   font-family: monospace;
-  font-size: 13px;
+  font-size: 10px;
   background: #f9fafb;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 4px;
   overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .result-data h4 {
-  margin: 0 0 8px;
-  font-size: 14px;
+  margin: 0 0 4px;
+  font-size: 12px;
   font-weight: 600;
 }
 

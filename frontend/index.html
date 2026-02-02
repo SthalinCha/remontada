@@ -16,7 +16,7 @@
         <div class="menu-section">
           <label for="main-mode-select">Clustering en Galería</label>
           <select id="main-mode-select" class="menu-select">
-            <option value="">-- Seleccionar --</option>
+            <option value="gallery" selected>📸 Galería de Imágenes</option>
             <option value="unsupervised">Clustering sin etiquetas</option>
             <option value="supervised">Clustering con etiquetas</option>
           </select>
@@ -474,7 +474,7 @@
         </div>
       </section>
 
-      <section>
+      <section id="gallery-section" style="display: none;">
         <h2>Galería</h2>
         <div id="gallery" class="gallery"></div>
       </section>

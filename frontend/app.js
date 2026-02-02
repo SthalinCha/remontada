@@ -34,8 +34,19 @@ mainModeSelect.addEventListener("change", function() {
   const mainMode = this.value;
   methodSelect.innerHTML = '<option value="">-- Seleccionar método --</option>';
   
-  if (mainMode === "unsupervised") {
+  if (mainMode === "gallery") {
+    // Modo galería: ocultar selector de métodos y mostrar galería
+    methodSection.style.display = "none";
+    gallerySection.style.display = "block";
+    resultsSection.style.display = "none";
+    const galleryRadio = document.querySelector('input[name="mode"][value="gallery"]');
+    if (galleryRadio) {
+      galleryRadio.checked = true;
+      galleryRadio.dispatchEvent(new Event("change"));
+    }
+  } else if (mainMode === "unsupervised") {
     // Poblar con métodos sin etiquetas
+    gallerySection.style.display = "none";
     Object.entries(unsupervisedMethods).forEach(([key, method]) => {
       const option = document.createElement("option");
       option.value = method.value;
@@ -45,6 +56,7 @@ mainModeSelect.addEventListener("change", function() {
     methodSection.style.display = "block";
   } else if (mainMode === "supervised") {
     // Poblar con métodos con etiquetas
+    gallerySection.style.display = "none";
     Object.entries(supervisedMethods).forEach(([key, method]) => {
       const option = document.createElement("option");
       option.value = method.value;
@@ -77,6 +89,7 @@ const uploadBtn = document.getElementById("upload-btn");
 const clearBtn = document.getElementById("clear-btn");
 const statusEl = document.getElementById("status");
 const gallery = document.getElementById("gallery");
+const gallerySection = document.getElementById("gallery-section");
 const resultsSection = document.getElementById("results-section");
 const results = document.getElementById("results");
 const dropZone = document.getElementById("drop-zone");
@@ -275,7 +288,7 @@ function clearGallery() {
 
 function renderResults(resultList, type) {
   resultsSection.style.display = "block";
-  gallery.parentElement.style.display = "none";
+  gallerySection.style.display = "none";
 
   if (type === "momentos" || type === "hu" || type === "zernike" || type === "sift" || type === "hog" || type === "cnn") {
     resultList.forEach((item) => {
@@ -750,6 +763,9 @@ async function uploadFiles(files) {
       const data = await res.json();
       if (data.items) {
         addItems(data.items);
+        // Asegurar que la galería esté visible
+        gallerySection.style.display = "block";
+        resultsSection.style.display = "none";
       }
     }
 
@@ -914,7 +930,7 @@ async function deleteAll() {
     state.results = [];
     results.innerHTML = "";
     resultsSection.style.display = "none";
-    gallery.parentElement.style.display = "block";
+    gallerySection.style.display = "none";
     setStatus("Listo");
   } catch (err) {
     setStatus("Error al borrar");
@@ -2496,7 +2512,7 @@ modeRadios.forEach((radio) => {
     
     if (mode === "gallery") {
       resultsSection.style.display = "none";
-      gallery.parentElement.style.display = "block";
+      gallerySection.style.display = "none";
     } else {
       state.results = [];
       results.innerHTML = "";
@@ -3112,24 +3128,36 @@ function displayMetrics(metrics) {
     resultsSection.insertBefore(metricsContainer, results);
   }
 
-  const dunn = metrics.dunn_index !== undefined ? metrics.dunn_index : "N/A";
-  const silhouette = metrics.silhouette_coefficient !== undefined ? metrics.silhouette_coefficient : "N/A";
+  const dunn = metrics.dunn_index !== undefined ? Number(metrics.dunn_index).toFixed(4) : "N/A";
+  const silhouette = metrics.silhouette_coefficient !== undefined ? Number(metrics.silhouette_coefficient).toFixed(4) : "N/A";
+
+  // Calcular totales desde state.results
+  const totalImages = state.results.length;
+  const uniqueClusters = new Set(state.results.map(r => r.cluster_id)).size;
 
   metricsContainer.innerHTML = `
-    <div class="metrics-box">
-      <h3>📊 Métricas de Evaluación</h3>
-      <div class="metrics-grid">
-        <div class="metric-item">
-          <span class="metric-label">Índice de Dunn:</span>
-          <span class="metric-value">${dunn}</span>
-          <small>Mayor es mejor (separación entre clusters)</small>
+    <div style="margin-top: 20px; padding: 15px; background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 6px;">
+      <h4>📊 Resultados de Métricas Internas:</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+        <div style="background: white; padding: 10px; border-radius: 4px; text-align: center;">
+          <strong>Dunn Index</strong><br>
+          <span style="font-size: 20px; color: #f57c00;">${dunn}</span>
         </div>
-        <div class="metric-item">
-          <span class="metric-label">Coeficiente de Silueta:</span>
-          <span class="metric-value">${silhouette}</span>
-          <small>Rango [-1, 1], mayor es mejor</small>
+        <div style="background: white; padding: 10px; border-radius: 4px; text-align: center;">
+          <strong>Silhouette</strong><br>
+          <span style="font-size: 20px; color: #0097a7;">${silhouette}</span>
         </div>
       </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #555;">
+        <strong>Resumen:</strong>
+        <ul style="margin: 5px 0; padding-left: 20px;">
+          <li>Total de imágenes: ${totalImages}</li>
+          <li>Número de clusters: ${uniqueClusters}</li>
+          <li>Clusters predichos: ${uniqueClusters}</li>
+        </ul>
+      </div>
+      <hr style="margin: 20px 0; border: none; border-top: 2px solid #9c27b0;">
+      <h4 style="margin-top: 20px;">🎯 Clusters Predichos (con Imágenes):</h4>
     </div>
   `;
 }
@@ -3145,3 +3173,8 @@ if (mode === "momentos" && momentosConfig) {
 } else if (mode === "hu" && huConfig) {
   huConfig.style.display = "flex";
 }
+
+// Inicializar modo galería por defecto
+setTimeout(() => {
+  mainModeSelect.dispatchEvent(new Event("change"));
+}, 100);
