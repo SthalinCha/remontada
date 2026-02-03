@@ -49,25 +49,15 @@ export function renderResults(resultList, type) {
         results.appendChild(group);
       }
 
-      // Actualizar centroide con estadísticas y botón expandible
+      // Actualizar centroide con botón expandible
       const centroidEl = group.querySelector(".cluster-centroid");
       if (centroidEl && Array.isArray(item.ultimo_centroide)) {
         const values = item.ultimo_centroide;
-        const mean = values.reduce((a, b) => a + b, 0) / values.length;
-        const min = Math.min(...values);
-        const max = Math.max(...values);
-        const std = Math.sqrt(values.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / values.length);
-        
         const allValues = values.map(v => v.toFixed(4)).join(", ");
         const uniqueId = `centroid-${cid}-${Date.now()}`;
-        const canvasId = `canvas-${uniqueId}`;
         
         centroidEl.innerHTML = `
           <div style="font-size: 11px; display: flex; gap: 15px; color: #555; flex-wrap: wrap; align-items: center;">
-            <span>📈 <strong>Media:</strong> ${mean.toFixed(4)}</span>
-            <span>📉 <strong>Min:</strong> ${min.toFixed(4)}</span>
-            <span>📈 <strong>Max:</strong> ${max.toFixed(4)}</span>
-            <span>📏 <strong>σ:</strong> ${std.toFixed(4)}</span>
             <button id="btn-${uniqueId}" onclick="
               const full = document.getElementById('full-${uniqueId}');
               const isHidden = full.style.display === 'none';
@@ -86,13 +76,6 @@ export function renderResults(resultList, type) {
               📋 Ver más
             </button>
           </div>
-          <canvas id="${canvasId}" width="400" height="60" style="
-            margin-top: 8px;
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            background: #fafafa;
-            cursor: crosshair;
-          "></canvas>
           <div id="full-${uniqueId}" style="
             display: none; 
             margin-top: 8px; 
@@ -109,61 +92,6 @@ export function renderResults(resultList, type) {
             [${allValues}]
           </div>
         `;
-        
-        // Dibujar el gráfico canvas
-        setTimeout(() => {
-          const canvas = document.getElementById(canvasId);
-          if (!canvas) return;
-          
-          const ctx = canvas.getContext('2d');
-          const displayValues = values.slice(0, 200);
-          const maxAbs = Math.max(...values.map(Math.abs));
-          
-          ctx.clearRect(0, 0, 400, 60);
-          
-          // Línea central (eje Y=0)
-          ctx.strokeStyle = '#ddd';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(0, 30);
-          ctx.lineTo(400, 30);
-          ctx.stroke();
-          
-          // Señal del centroide
-          ctx.strokeStyle = '#2196F3';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          
-          displayValues.forEach((v, i) => {
-            const x = (i / displayValues.length) * 400;
-            const y = 30 - (v / maxAbs) * 25;
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-          });
-          
-          ctx.stroke();
-          
-          // Puntos en la señal
-          ctx.fillStyle = '#1976d2';
-          displayValues.forEach((v, i) => {
-            if (i % Math.max(1, Math.floor(displayValues.length / 30)) === 0) {
-              const x = (i / displayValues.length) * 400;
-              const y = 30 - (v / maxAbs) * 25;
-              ctx.beginPath();
-              ctx.arc(x, y, 2, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          });
-          
-          // Tooltip interactivo
-          canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const index = Math.floor((x / 400) * displayValues.length);
-            if (index >= 0 && index < displayValues.length) {
-              canvas.title = `Índice: ${index} | Valor: ${displayValues[index].toFixed(6)}`;
-            }
-          });
-        }, 50);
       }
 
       // Agregar imagen
@@ -172,8 +100,13 @@ export function renderResults(resultList, type) {
       tile.className = "cluster-item";
 
       const img = document.createElement("img");
-      // Usar imágenes procesadas con visualización (para SIFT, HOG, etc.)
-      const imageUrl = item.binarized_url || item.processed_url || item.original_url;
+      // Para HOG, usar imágenes originales; para otros métodos usar binarizadas o procesadas
+      let imageUrl;
+      if (type === "hog") {
+        imageUrl = item.original_url;
+      } else {
+        imageUrl = item.binarized_url || item.processed_url || item.original_url;
+      }
       img.src = resolveUrl(imageUrl);
       img.alt = item.filename || "imagen";
 
@@ -242,7 +175,7 @@ export function renderClusterVisualization(clustersData, containerId) {
       
       // Imagen
       const imgEl = document.createElement("img");
-      const imageUrl = img.binarized_url || img.processed_url || img.original_url;
+      const imageUrl = img.original_url || img.binarized_url || img.processed_url;
       imgEl.src = resolveUrl(imageUrl);
       imgEl.alt = img.filename || "imagen";
       tile.appendChild(imgEl);
