@@ -273,8 +273,8 @@ def procesar_hog_con_descriptores(image_bytes: bytes):
 
     features, hog_image = hog(
         img,
-        orientations=9,
-        pixels_per_cell=(8, 8),
+        orientations=6,
+        pixels_per_cell=(16, 16),
         cells_per_block=(2, 2),
         block_norm="L2-Hys",
         visualize=True,

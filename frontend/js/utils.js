@@ -57,10 +57,10 @@ export const unsupervisedMethods = {
 
 // Mapeo de métodos con etiquetas
 export const supervisedMethods = {
-  "momentos-metrics": { value: "external-metrics", label: "📊 Momentos (ARI/AMI/NMI)" },
-  "hu-metrics": { value: "external-metrics-hu", label: "📊 Hu (ARI/AMI/NMI)" },
-  "zernike-metrics": { value: "external-metrics-zernike", label: "📊 Zernike (ARI/AMI/NMI)" },
-  "sift-metrics": { value: "external-metrics-sift", label: "📊 SIFT (ARI/AMI/NMI)" },
-  "hog-metrics": { value: "external-metrics-hog", label: "📊 HOG (ARI/AMI/NMI)" },
-  "cnn-metrics": { value: "external-metrics-cnn", label: "📊 CNN (ARI/AMI/NMI)" }
+  "momentos-metrics": { value: "external-metrics", label: " Momentos " },
+  "hu-metrics": { value: "external-metrics-hu", label: " Hu " },
+  "zernike-metrics": { value: "external-metrics-zernike", label: " Zernike " },
+  "sift-metrics": { value: "external-metrics-sift", label: " SIFT " },
+  "hog-metrics": { value: "external-metrics-hog", label: " HOG " },
+  "cnn-metrics": { value: "external-metrics-cnn", label: " CNN " }
 };
