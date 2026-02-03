@@ -62,8 +62,8 @@ allowed_origins = [
     "https://remontada-1.onrender.com"      # frontend
 ]
 
-# En desarrollo, permitir todos los orígenes
-if os.getenv("ENVIRONMENT") == "development":
+# En desarrollo local (Docker), permitir todos los orígenes
+if os.getenv("ENVIRONMENT", "development") == "development":
     allowed_origins = ["*"]
 
 app.add_middleware(
