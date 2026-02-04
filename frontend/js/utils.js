@@ -50,9 +50,9 @@ export const unsupervisedMethods = {
   "momentos": { value: "momentos", label: "Momentos (24)" },
   "hu": { value: "hu", label: "Momentos de Hu" },
   "zernike": { value: "zernike", label: "Momentos de Zernike" },
-  "sift": { value: "sift", label: "SIFT (solo procesadas)" },
-  "hog": { value: "hog", label: "HOG (solo procesadas)" },
-  "cnn": { value: "cnn", label: "CNN/ResNet50 (solo procesadas)" }
+  "sift": { value: "sift", label: "SIFT " },
+  "hog": { value: "hog", label: "HOG " },
+  "cnn": { value: "cnn", label: "CNN/ResNet50 " }
 };
 
 // Mapeo de métodos con etiquetas
